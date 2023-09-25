@@ -16,6 +16,7 @@ def main():
     game_state = engine.GameState()
     print(game_state.board)
     load_images()
+    target_square = ()
         
     running = True
 
@@ -23,6 +24,14 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                location = pygame.mouse.get_pos()
+                col = location[0] // SQ_SIZE
+                row = location[1] // SQ_SIZE
+                target_square = (row, col)
+                move = engine.Move(target_square, game_state.board)
+                game_state.make_move(move)
+                target_square = ()
 
         draw_game_state(screen, game_state)
         pygame.display.flip()
@@ -36,8 +45,9 @@ def load_images():
         IMAGES[symbol] = pygame.transform.scale(pygame.image.load("images/" + symbol + ".png"), (SQ_SIZE, SQ_SIZE))
 
 def draw_game_state(screen, game_state):
-    draw_board(screen)
+    #draw_board(screen)
     draw_symbols(screen, game_state.board)
+    draw_board(screen)
 
 def draw_board(screen):
     color = pygame.Color("black")
@@ -50,7 +60,7 @@ def draw_symbols(screen, board):
         for col in range(DIMENSION):
             symbol = board[row][col]
             if symbol != "--":
-                screen.blit(IMAGES[symbol], pygame.Rect(col * SQ_SIZE, row * SQ_SIZE, SQ_SIZE, SQ_SIZE))
+                screen.blit(IMAGES[symbol], pygame.Rect(col * SQ_SIZE, row * (SQ_SIZE + 10), SQ_SIZE, SQ_SIZE))
 
 
 main()
